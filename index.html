@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Survivors' Pool — World Cup 2026 folk game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- design tokens ---------- */
+:root{
+  --ink:#0B1020;          /* floodlit midnight, the night the chart hangs in */
+  --ink-2:#141B2E;        /* lifted panel */
+  --ink-3:#1D2740;        /* raised control */
+  --line:#2A3552;         /* hairline on the chart */
+  --chalk:#F2EDE3;        /* printed coupon / share card paper */
+  --chalk-ink:#1A1712;    /* ink on the coupon */
+  --mist:#8C97B5;         /* secondary text */
+  --mist-2:#5C678A;       /* tertiary */
+  --alive:#33C26B;        /* still breathing, the pitch line */
+  --alive-dim:#1c5b39;
+  --glory:#E8B84B;        /* the trophy */
+  --heat:#FF5A3C;         /* the taunt, the terrace flare */
+  --ash:#697089;          /* the eliminated */
+  --white:#F6F8FF;
+  --shadow:0 18px 40px -20px rgba(0,0,0,.7);
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:radial-gradient(1100px 520px at 50% -8%, rgba(51,194,107,.10), transparent 62%), var(--ink);
+  background-color:var(--ink);
+  color:var(--white);
+  font-family:Inter,system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.45;
+}
+.app{max-width:520px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative;padding-bottom:84px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font-family:inherit}
+h1,h2,h3{margin:0}
+.anton{font-family:Anton,Inter,sans-serif;font-weight:400;letter-spacing:.01em;text-transform:uppercase}
+.mono{font-family:'Space Mono',ui-monospace,monospace}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(var(--ink),rgba(11,16,32,.86));backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 18px 12px;display:flex;align-items:center;gap:12px}
+.topbar .mark{width:34px;height:34px;border-radius:9px;background:var(--alive);display:grid;place-items:center;flex:none;box-shadow:inset 0 0 0 2px rgba(0,0,0,.25)}
+.topbar .mark span{font-family:Anton;font-size:20px;color:var(--ink);transform:translateY(1px)}
+.topbar .name{flex:1;min-width:0}
+.topbar .name h1{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .name p{margin:1px 0 0;font-size:11px;color:var(--mist);letter-spacing:.06em;text-transform:uppercase}
+.topbar .md{font-family:'Space Mono';font-size:11px;color:var(--glory);border:1px solid var(--line);border-radius:20px;padding:4px 10px;white-space:nowrap}
+
+/* ---------- screen ---------- */
+.screen{padding:18px;flex:1}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mist-2);margin-bottom:6px}
+.h-poster{font-family:Anton;font-size:30px;line-height:.98;letter-spacing:.005em;text-transform:uppercase;margin-bottom:4px}
+.sub{color:var(--mist);font-size:13.5px;margin:0 0 18px}
+
+.card{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card.tight{padding:13px}
+.row{display:flex;align-items:center;gap:12px}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:var(--mist)}
+.tiny{font-size:11.5px}
+
+label.field{display:block;margin-bottom:13px}
+label.field > span{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--mist);margin-bottom:6px}
+input[type=text],input[type=number],select{width:100%;background:var(--ink-3);border:1px solid var(--line);border-radius:10px;color:var(--white);padding:11px 12px;font-size:15px;outline:none}
+input:focus,select:focus{border-color:var(--alive)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--ink-3);border-radius:9px;padding:9px 11px;font-size:13px;color:var(--mist);flex:1;min-width:fit-content}
+.seg button.on{background:var(--alive);color:var(--ink);border-color:var(--alive);font-weight:700}
+.seg.small button{padding:7px 9px;font-size:12px}
+
+.btn{display:block;width:100%;background:var(--alive);color:var(--ink);font-weight:800;font-size:15px;border-radius:11px;padding:14px;letter-spacing:.01em;box-shadow:var(--shadow)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--white);border:1px solid var(--line);box-shadow:none;font-weight:600}
+.btn.heat{background:var(--heat);color:#fff}
+.btn.gold{background:var(--glory);color:var(--ink)}
+.btn.sm{padding:10px;font-size:13.5px}
+.btnrow{display:flex;gap:10px}
+.btnrow .btn{margin:0}
+
+/* team chip */
+.team{display:flex;align-items:center;gap:9px;min-width:0}
+.flag{font-size:20px;line-height:1;flex:none;width:24px;text-align:center}
+.team .tn{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;border:1px solid var(--line);color:var(--mist);white-space:nowrap}
+.badge.alive{color:var(--alive);border-color:var(--alive-dim);background:rgba(51,194,107,.08)}
+.badge.out{color:var(--ash);border-color:#333a4f}
+.badge.glory{color:var(--glory);border-color:#6b5a23;background:rgba(232,184,75,.08)}
+.badge.und{color:#7fd0ff;border-color:#2c4a5e;background:rgba(127,208,255,.06)}
+.owner{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:var(--ink-3);border:1px solid var(--line);white-space:nowrap}
+.elim .tn{text-decoration:line-through;text-decoration-color:var(--ash);color:var(--mist)}
+.elim .flag{filter:grayscale(1) opacity(.55)}
+
+/* leaderboard */
+.lb-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.lb-row:last-child{border-bottom:none}
+.rank{font-family:Anton;font-size:22px;width:26px;text-align:center;color:var(--mist-2)}
+.rank.r1{color:var(--glory)}.rank.r2{color:#cdd6ea}.rank.r3{color:#caa07a}
+.lb-mid{flex:1;min-width:0}
+.lb-mid .pn{font-weight:700;font-size:15px}
+.lb-mid .meta{font-size:11.5px;color:var(--mist);margin-top:1px}
+.pts{font-family:'Space Mono';font-weight:700;font-size:19px}
+.bar{height:5px;border-radius:4px;background:var(--ink-3);overflow:hidden;margin-top:7px}
+.bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--alive),var(--glory))}
+
+/* group card */
+.group-card{padding:12px 14px}
+.group-head{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+.group-head .g{font-family:Anton;font-size:16px}
+.group-head .gm{font-size:11px;color:var(--mist-2)}
+.grow{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid rgba(42,53,82,.55)}
+.grow:first-of-type{border-top:none}
+.grow .pos{width:16px;font-family:'Space Mono';font-size:12px;color:var(--mist-2);text-align:center;flex:none}
+.grow .rec{font-family:'Space Mono';font-size:11px;color:var(--mist);flex:none}
+
+/* knockout columns */
+.ko-wrap{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.ko-col{flex:none;width:180px}
+.ko-col h4{font-family:Anton;font-size:12px;letter-spacing:.06em;color:var(--mist);margin-bottom:8px;position:sticky;top:0}
+.ko-slot{background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:8px 9px;margin-bottom:7px}
+.ko-slot.alive{border-color:var(--alive-dim);box-shadow:inset 3px 0 0 var(--alive)}
+.ko-slot.elim{opacity:.55;box-shadow:inset 3px 0 0 var(--ash)}
+.ko-empty{border-style:dashed;color:var(--mist-2);font-size:11px;text-align:center;padding:10px 6px}
+
+/* banter */
+.feed{display:flex;flex-direction:column;gap:9px}
+.msg{background:var(--ink-2);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.msg .who{font-size:11px;font-weight:700;color:var(--alive);letter-spacing:.03em}
+.msg .who.sys{color:var(--glory)}
+.msg .who.taunt{color:var(--heat)}
+.msg .tx{font-size:14px;margin-top:2px}
+.msg .ts{font-size:10px;color:var(--mist-2);margin-top:3px}
+.composer{display:flex;gap:8px;margin-top:12px}
+.composer input{flex:1}
+.composer button{flex:none;background:var(--alive);color:var(--ink);border-radius:10px;padding:0 16px;font-weight:800}
+.taunts{display:flex;gap:7px;overflow-x:auto;padding:10px 0 4px}
+.taunts button{flex:none;border:1px solid #5a2a20;background:rgba(255,90,60,.08);color:#ffb4a4;border-radius:20px;padding:7px 12px;font-size:12.5px;white-space:nowrap}
+
+/* printed share card */
+.print{background:var(--chalk);color:var(--chalk-ink);border-radius:16px;padding:22px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.print::after{content:"";position:absolute;inset:8px;border:1.5px solid rgba(26,23,18,.35);border-radius:10px;pointer-events:none}
+.print .kicker{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#8a7f6c}
+.print .big{font-family:Anton;font-size:34px;line-height:.95;text-transform:uppercase;margin:6px 0}
+.print .flagbig{font-size:46px;margin:4px 0}
+.print .line{font-size:14px;margin-top:6px}
+.print.glory{background:linear-gradient(160deg,#fbe9bd,#f3d489)}
+.print .stamp{position:absolute;right:14px;bottom:14px;font-family:Anton;font-size:13px;letter-spacing:.1em;border:2px solid var(--chalk-ink);border-radius:6px;padding:3px 8px;transform:rotate(-7deg);opacity:.8}
+
+/* bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;max-width:520px;margin:0 auto;background:rgba(13,18,34,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;color:var(--mist-2);font-size:10px;letter-spacing:.03em;border-radius:10px}
+.nav button .ic{font-size:19px;line-height:1}
+.nav button.on{color:var(--alive)}
+.nav button.on .ic{transform:translateY(-1px)}
+
+.empty{text-align:center;color:var(--mist);padding:34px 16px}
+.empty .ic{font-size:34px;margin-bottom:8px}
+.divider{height:1px;background:var(--line);margin:16px 0}
+.pill-list{display:flex;flex-wrap:wrap;gap:7px}
+.kv{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(42,53,82,.5)}
+.kv:last-child{border-bottom:none}
+.kv span:last-child{font-family:'Space Mono';color:var(--alive)}
+.note{font-size:12px;color:var(--mist);background:rgba(127,208,255,.05);border:1px solid #243a4a;border-radius:10px;padding:10px 12px;margin-top:4px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--white);color:var(--ink);font-weight:700;font-size:13px;padding:11px 16px;border-radius:30px;box-shadow:var(--shadow);z-index:50;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+.draftpick{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:10px;padding:9px;background:var(--ink-2);margin-bottom:7px}
+.draftpick.taken{opacity:.4}
+.draftpick button{margin-left:auto;background:var(--alive);color:var(--ink);font-weight:700;border-radius:8px;padding:6px 11px;font-size:12px}
+::-webkit-scrollbar{height:6px;width:6px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="toast" id="toast"></div>
+<nav class="nav" id="nav" style="display:none"></nav>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   STORAGE ADAPTER
+   Prefers the Claude artifact window.storage (persists across sessions).
+   Falls back to localStorage when self-hosted, then to memory.
+   For production this whole layer maps onto the Supabase tables shipped
+   alongside this file (see survivors-pool-schema.sql).
+   ========================================================================= */
+const Store = (() => {
+  const mem = {};
+  const hasWS = typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function';
+  async function get(k){
+    if(hasWS){ try{ const r = await window.storage.get(k); return r ? JSON.parse(r.value) : null; }catch(e){ return null; } }
+    try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; }catch(e){ return k in mem ? mem[k] : null; }
+  }
+  async function set(k,v){
+    const s = JSON.stringify(v);
+    if(hasWS){ try{ await window.storage.set(k,s); return; }catch(e){} }
+    try{ localStorage.setItem(k,s); return; }catch(e){ mem[k]=v; }
+  }
+  return {get,set,persistent:hasWS};
+})();
+
+/* =========================================================================
+   REMOTE SYNC  —  optional Supabase backend.
+   Leave SUPABASE_KEY blank and the app runs exactly as the local build.
+   Paste your publishable key (sb_publishable_...) and a pool becomes a row
+   in pool_state, reachable from any phone that opens the invite link.
+   Reads and writes go through two security-definer functions (get_pool,
+   save_pool) so the public key never exposes the whole table.
+   ========================================================================= */
+const SUPABASE_URL = 'https://dkvqcnuoaptvdjorreyb.supabase.co';
+const SUPABASE_KEY = ''; // <-- paste your publishable key here to switch sync on
+const SUPA = { on:false, sb:null };
+try{
+  if(SUPABASE_URL && SUPABASE_KEY && typeof window!=='undefined' && window.supabase){
+    SUPA.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    SUPA.on = true;
+  }
+}catch(e){ SUPA.on = false; }
+
+const Remote = {
+  async pull(link){
+    if(!SUPA.on || !link) return null;
+    try{ const {data,error} = await SUPA.sb.rpc('get_pool',{p_link:link}); return error ? null : (data||null); }
+    catch(e){ return null; }
+  },
+  async push(state){
+    if(!SUPA.on || !state || !state.link) return;
+    try{ await SUPA.sb.rpc('save_pool',{p_link:state.link, p_state:state}); }catch(e){}
+  },
+  _t:null, _busy:false,
+  startSync(){
+    if(!SUPA.on || this._t) return;
+    const tick = async ()=>{
+      if(this._busy || !S || !S.link) return;
+      this._busy = true;
+      try{
+        const remote = await this.pull(S.link);
+        if(remote && (remote.updated||0) > (S.updated||0)){ S = remote; await Store.set(KEY,S); render(); }
+      }catch(e){}finally{ this._busy = false; }
+    };
+    this._t = setInterval(tick, 5000);
+    if(typeof window!=='undefined') window.addEventListener('focus', tick);
+  }
+};
+function inviteUrl(){
+  if(SUPA.on && S && S.link) return location.origin + location.pathname + '?pool=' + encodeURIComponent(S.link);
+  return 'claude.site/' + (S ? S.link : '');
+}
+
+/* =========================================================================
+   SEED DATA  —  Official FIFA World Cup 2026 final draw (5 Dec 2025).
+   This is the demo seed. In production it is replaced by a live fixtures
+   feed; the host can also edit any team in Admin.
+   Favourites = Pot 1 (the twelve seeded sides). Everyone else carries the
+   underdog tier, which earns the underdog bonus on knockout progress.
+   ========================================================================= */
+const POT1 = new Set(["Spain","Argentina","France","England","Belgium","Brazil","Germany","Netherlands","Portugal","Canada","Mexico","USA"]);
+const GROUPS_SEED = {
+  A:[["Mexico","🇲🇽"],["South Africa","🇿🇦"],["South Korea","🇰🇷"],["Czechia","🇨🇿"]],
+  B:[["Canada","🇨🇦"],["Bosnia & Herz.","🇧🇦"],["Qatar","🇶🇦"],["Switzerland","🇨🇭"]],
+  C:[["Brazil","🇧🇷"],["Morocco","🇲🇦"],["Haiti","🇭🇹"],["Scotland","🏴󠁧󠁢󠁳󠁣󠁴󠁿"]],
+  D:[["USA","🇺🇸"],["Paraguay","🇵🇾"],["Australia","🇦🇺"],["Türkiye","🇹🇷"]],
+  E:[["Germany","🇩🇪"],["Curaçao","🇨🇼"],["Côte d'Ivoire","🇨🇮"],["Ecuador","🇪🇨"]],
+  F:[["Netherlands","🇳🇱"],["Japan","🇯🇵"],["Sweden","🇸🇪"],["Tunisia","🇹🇳"]],
+  G:[["Belgium","🇧🇪"],["Egypt","🇪🇬"],["Iran","🇮🇷"],["New Zealand","🇳🇿"]],
+  H:[["Spain","🇪🇸"],["Cabo Verde","🇨🇻"],["Saudi Arabia","🇸🇦"],["Uruguay","🇺🇾"]],
+  I:[["France","🇫🇷"],["Senegal","🇸🇳"],["Iraq","🇮🇶"],["Norway","🇳🇴"]],
+  J:[["Argentina","🇦🇷"],["Algeria","🇩🇿"],["Austria","🇦🇹"],["Jordan","🇯🇴"]],
+  K:[["Portugal","🇵🇹"],["Congo DR","🇨🇩"],["Uzbekistan","🇺🇿"],["Colombia","🇨🇴"]],
+  L:[["England","🏴󠁧󠁢󠁥󠁮󠁧󠁿"],["Croatia","🇭🇷"],["Ghana","🇬🇭"],["Panama","🇵🇦"]]
+};
+
+const STAGES = ["GROUP","R32","R16","QF","SF","FINAL","CHAMPION"];
+const STAGE_LABEL = {GROUP:"Group stage",R32:"Round of 32",R16:"Round of 16",QF:"Quarter-final",SF:"Semi-final",FINAL:"Final",CHAMPION:"Champion"};
+const STAGE_SHORT = {GROUP:"Group",R32:"R32",R16:"R16",QF:"QF",SF:"SF",FINAL:"Final",CHAMPION:"Champ"};
+
+const DEFAULT_RULES = {
+  groupWin:3, groupDraw:1,
+  reach:{R32:4, R16:6, QF:10, SF:16, FINAL:24, CHAMPION:40},
+  underdogBonus:3,        // per knockout round reached by a non-Pot-1 side
+  exactCallBonus:10,      // player nailed how far their team would go
+  cleanSheetBonus:4,      // manual flag (needs real match data in prod)
+  penaltyBonus:4          // survived a shootout (manual flag in prod)
+};
+
+/* =========================================================================
+   STATE
+   ========================================================================= */
+let S = null;             // the active pool
+let view = "dash";        // current tab
+const KEY = "sp:pool";    // single-pool MVP; multi-pool keys by id in prod
+
+function uid(){ return Math.random().toString(36).slice(2,9); }
+function now(){ return Date.now(); }
+
+function buildTeams(){
+  const out = [];
+  Object.keys(GROUPS_SEED).forEach(g=>{
+    GROUPS_SEED[g].forEach(([name,flag])=>{
+      out.push({
+        id:uid(), name, flag, group:g,
+        tier: POT1.has(name) ? "FAV":"UND",
+        gw:0, gd:0, gl:0,
+        stage:"GROUP", eliminated:false,
+        cleanSheet:false, penalties:false
+      });
+    });
+  });
+  return out;
+}
+
+async function loadPool(){ S = await Store.get(KEY); }
+async function savePool(){ if(S){ S.updated = now(); await Store.set(KEY,S); await Remote.push(S); } }
+
+/* =========================================================================
+   SCORING ENGINE
+   Stage points are cumulative: a side that reaches the QF banks R32 + R16 + QF.
+   Group W/D points stack on top. Underdog bonus rewards lower seeds per
+   knockout round. Exact-call bonus rewards a player's pre-tournament prophecy.
+   ========================================================================= */
+function teamPoints(team, assignment){
+  const r = S.rules;
+  let pts = team.gw*r.groupWin + team.gd*r.groupDraw;
+  const idx = STAGES.indexOf(team.stage);
+  for(let i=1;i<=idx;i++){
+    const st = STAGES[i];
+    pts += r.reach[st] || 0;
+    if(team.tier==="UND") pts += r.underdogBonus;
+  }
+  if(team.cleanSheet) pts += r.cleanSheetBonus;
+  if(team.penalties) pts += r.penaltyBonus;
+  if(assignment && assignment.call && assignment.call===team.stage) pts += r.exactCallBonus;
+  return Math.round(pts);
+}
+function teamById(id){ return S.teams.find(t=>t.id===id); }
+function memberById(id){ return S.members.find(m=>m.id===id); }
+function teamsOf(memberId){
+  return S.assignments.filter(a=>a.member===memberId).map(a=>({team:teamById(a.team),assignment:a})).filter(x=>x.team);
+}
+function ownerOf(teamId){
+  const a = S.assignments.find(a=>a.team===teamId);
+  return a ? memberById(a.member) : null;
+}
+function leaderboard(){
+  const rows = S.members.map(m=>{
+    const mine = teamsOf(m.id);
+    const pts = mine.reduce((s,x)=>s+teamPoints(x.team,x.assignment),0);
+    const alive = mine.filter(x=>!x.team.eliminated).length;
+    return {member:m, pts, alive, teams:mine};
+  });
+  rows.sort((a,b)=> b.pts-a.pts || b.alive-a.alive || a.member.name.localeCompare(b.member.name));
+  return rows;
+}
+function maxPts(rows){ return Math.max(1,...rows.map(r=>r.pts)); }
+
+/* =========================================================================
+   UI HELPERS
+   ========================================================================= */
+const el = id => document.getElementById(id);
+function h(html){ const t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstChild; }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let toastTimer;
+function toast(msg){ const t=el('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),1800); }
+
+function statusBadge(team){
+  if(team.stage==="CHAMPION") return `<span class="badge glory">★ Champion</span>`;
+  if(team.eliminated) return `<span class="badge out">Out · ${STAGE_SHORT[team.stage]}</span>`;
+  if(team.stage==="GROUP") return `<span class="badge alive">In play</span>`;
+  return `<span class="badge alive">Alive · ${STAGE_SHORT[team.stage]}</span>`;
+}
+function teamChip(team,{owner=false,record=false}={}){
+  const o = owner ? ownerOf(team.id) : null;
+  return `<div class="team ${team.eliminated?'elim':''}">
+     <span class="flag">${team.flag}</span>
+     <span class="tn">${esc(team.name)}</span>
+     ${team.tier==="UND"?'<span class="badge und">Underdog</span>':''}
+     ${record?`<span class="rec">${team.gw}-${team.gd}-${team.gl}</span>`:''}
+     ${o?`<span class="owner">${esc(o.name)}</span>`:''}
+   </div>`;
+}
+
+/* =========================================================================
+   ROUTER
+   ========================================================================= */
+function render(){
+  if(!S){ return renderOnboarding(); }
+  el('nav').style.display = "flex";
+  renderNav();
+  renderTop();
+  const map = {dash:renderDash, teams:renderTeams, bracket:renderBracket, banter:renderBanter, admin:renderAdmin};
+  (map[view]||renderDash)();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function renderTop(){
+  const app = el('app');
+  let top = el('topbar');
+  const md = currentMatchday();
+  const html = `<div class="topbar" id="topbar">
+     <div class="mark"><span>S</span></div>
+     <div class="name"><h1>${esc(S.name)}</h1><p>${S.members.length} players · ${S.teamsPer} team${S.teamsPer>1?'s':''} each</p></div>
+     <div class="md">${md}</div>
+   </div>`;
+  if(top){ top.replaceWith(h(html)); } else { app.prepend(h(html)); }
+}
+function currentMatchday(){
+  if(S.locked && leaderboard()[0] && teamsOf(leaderboard()[0].member.id).some(x=>x.team.stage==="CHAMPION")) return "Full time";
+  const anyKO = S.teams.some(t=>t.stage!=="GROUP");
+  if(!anyKO) return S.locked ? "Group stage" : "Pre-draw";
+  const champ = S.teams.find(t=>t.stage==="CHAMPION");
+  if(champ) return "Champion crowned";
+  const deepest = S.teams.reduce((m,t)=>Math.max(m,STAGES.indexOf(t.stage)),0);
+  return STAGE_SHORT[STAGES[deepest]];
+}
+function renderNav(){
+  const items=[["dash","◎","Pool"],["teams","✺","Teams"],["bracket","⊞","Bracket"],["banter","✦","Banter"],["admin","⚙","Admin"]];
+  el('nav').innerHTML = items.map(([k,ic,lab])=>
+    `<button class="${view===k?'on':''}" data-tab="${k}"><span class="ic">${ic}</span>${lab}</button>`).join('');
+  el('nav').querySelectorAll('button').forEach(b=> b.onclick=()=>{ view=b.dataset.tab; render(); });
+}
+
+/* =========================================================================
+   ONBOARDING  —  create the pool
+   ========================================================================= */
+function renderOnboarding(){
+  el('nav').style.display="none";
+  let draft = {name:"", host:"", players:6, teamsPer:4, scoring:"classic", draw:"random"};
+  el('app').innerHTML = `
+   <div class="topbar" id="topbar">
+     <div class="mark"><span>S</span></div>
+     <div class="name"><h1>Survivors' Pool</h1><p>World Cup 2026 · the folk game</p></div>
+   </div>
+   <div class="screen">
+     <div class="eyebrow">Host a private league</div>
+     <h2 class="h-poster">Deal the teams.<br>Watch them die.</h2>
+     <p class="sub">Everyone gets a fistful of nations. You score while they survive and you roast each other when they don't. Set it up once, share the link, let the tournament do the rest.</p>
+
+     <div class="card">
+       <label class="field"><span>Pool name</span>
+         <input type="text" id="o-name" placeholder="The Office, Group Chat FC, Lagos Massive…" maxlength="40"></label>
+       <label class="field"><span>Your name (host)</span>
+         <input type="text" id="o-host" placeholder="e.g. Prof P." maxlength="24"></label>
+       <div class="row" style="gap:10px">
+         <label class="field" style="flex:1;margin-bottom:0"><span>Players</span>
+           <input type="number" id="o-players" value="6" min="2" max="48"></label>
+         <label class="field" style="flex:1;margin-bottom:0"><span>Teams each</span>
+           <input type="number" id="o-teams" value="4" min="1" max="6"></label>
+       </div>
+       <p class="tiny muted" id="o-fit" style="margin:8px 2px 0"></p>
+     </div>
+
+     <div class="card">
+       <label class="field" style="margin-bottom:14px"><span>Scoring mode</span>
+         <div class="seg" id="o-scoring">
+           <button data-v="classic" class="on">Classic survival</button>
+           <button data-v="underdog">Underdog hunter</button>
+           <button data-v="brutal">Brutal</button>
+         </div></label>
+       <p class="tiny muted" id="o-scoring-note" style="margin:-6px 2px 14px"></p>
+       <label class="field" style="margin-bottom:0"><span>How teams are assigned</span>
+         <div class="seg" id="o-draw">
+           <button data-v="random" class="on">Random draw</button>
+           <button data-v="snake">Snake draft</button>
+           <button data-v="manual">Manual / auction</button>
+         </div></label>
+     </div>
+
+     <button class="btn" id="o-go">Create pool</button>
+     <p class="tiny muted" style="text-align:center;margin-top:12px">${SUPA.on?'Sync is on. Share the invite link and your pool follows you to any phone.':(Store.persistent?'Saved on this device and synced to your Claude storage.':'Running in local mode. Connect Supabase to sync across phones.')}</p>
+   </div>`;
+
+  const fit = ()=>{
+    const p=+el('o-players').value||0, t=+el('o-teams').value||0;
+    const need=p*t;
+    el('o-fit').textContent = `That deals ${need} of 48 teams.` + (need>48?' Too many — lower players or teams each.':(need<48?` ${48-need} nations sit unowned (neutral).`:' Every nation owned. Clean.'));
+    el('o-fit').style.color = need>48 ? 'var(--heat)' : 'var(--mist)';
+  };
+  const notes={classic:"Progression points, group W/D, underdog bonus. The standard coupon.",underdog:"Doubles the underdog bonus. Reward the romantics who got Curaçao.",brutal:"Champion takes 60, everyone else's group points halved. High variance, high tears."};
+  const setNote=v=> el('o-scoring-note').textContent=notes[v];
+  setNote('classic');
+  ['o-players','o-teams'].forEach(id=>el(id).oninput=fit); fit();
+  segWire('o-scoring', v=>{draft.scoring=v; setNote(v);});
+  segWire('o-draw', v=>{draft.draw=v;});
+
+  el('o-go').onclick = async ()=>{
+    const name=el('o-name').value.trim(), host=el('o-host').value.trim();
+    const players=Math.max(2,Math.min(48,+el('o-players').value||2));
+    const teamsPer=Math.max(1,Math.min(6,+el('o-teams').value||1));
+    if(!name) return toast("Name the pool first.");
+    if(!host) return toast("Add your name as host.");
+    if(players*teamsPer>48) return toast("Too many teams dealt for 48 nations.");
+    S = {
+      id:uid(), name, link:"sp-"+uid(),
+      teamsPer, scoring:draft.scoring, draw:draft.draw,
+      locked:false, isPublic:false,
+      rules: scoringPreset(draft.scoring),
+      members:[{id:uid(), name:host, host:true}],
+      teams: buildTeams(),
+      assignments:[],
+      messages:[{id:uid(),sys:true,who:"Pool",text:`${host} opened the doors. ${players} seats, ${teamsPer} teams apiece.`,ts:now()}],
+      created:now(), updated:now(),
+      seatsTarget:players
+    };
+    await savePool();
+    view="dash"; render();
+    toast("Pool created. Add your players.");
+  };
+}
+function scoringPreset(mode){
+  const r = JSON.parse(JSON.stringify(DEFAULT_RULES));
+  if(mode==="underdog") r.underdogBonus = 6;
+  if(mode==="brutal"){ r.reach.CHAMPION=60; r.groupWin=2; r.groupDraw=0; }
+  return r;
+}
+function segWire(id,cb){
+  el(id).querySelectorAll('button').forEach(b=> b.onclick=()=>{
+    el(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); cb(b.dataset.v);
+  });
+}
+
+/* =========================================================================
+   DASHBOARD  —  one screen: my teams, the table, what is happening
+   ========================================================================= */
+function renderDash(){
+  const me = S.members[0];
+  const rows = leaderboard();
+  const mine = teamsOf(me.id);
+  const top = el('topbar');
+  const body = h(`<div class="screen" id="screen"></div>`);
+  let html = "";
+
+  if(S.assignments.length===0){
+    html += `<div class="card" style="border-color:var(--alive-dim);background:rgba(51,194,107,.05)">
+       <div class="spread"><div><div class="eyebrow" style="color:var(--alive)">Next step</div>
+       <h3 class="anton" style="font-size:18px">Deal the teams</h3>
+       <p class="tiny muted" style="margin:4px 0 0">${S.members.length} player${S.members.length>1?'s':''} so far · seats for ${S.seatsTarget}</p></div></div>
+       <div class="btnrow" style="margin-top:14px">
+         <button class="btn sm ghost" onclick="view='admin';render()">Add players</button>
+         <button class="btn sm" onclick="view='teams';render()">Assign teams</button>
+       </div></div>`;
+  }
+
+  // my teams
+  html += `<div class="eyebrow">My nations</div>`;
+  if(mine.length===0){
+    html += `<div class="card tight"><p class="tiny muted" style="margin:0">No teams yet. Run the draw in the Teams tab.</p></div>`;
+  } else {
+    const myPts = mine.reduce((s,x)=>s+teamPoints(x.team,x.assignment),0);
+    const aliveN = mine.filter(x=>!x.team.eliminated).length;
+    html += `<div class="card">
+       <div class="spread" style="margin-bottom:10px">
+         <div><div class="anton" style="font-size:26px;color:var(--glory)">${myPts}<span style="font-size:12px;color:var(--mist);font-family:Inter;font-weight:600"> pts</span></div></div>
+         <div class="badge ${aliveN?'alive':'out'}">${aliveN} of ${mine.length} alive</div>
+       </div>
+       ${mine.sort((a,b)=>teamPoints(b.team,b.assignment)-teamPoints(a.team,a.assignment)).map(x=>`
+         <div class="spread" style="padding:8px 0;border-top:1px solid rgba(42,53,82,.5)">
+           ${teamChip(x.team,{record:true})}
+           <div class="row" style="gap:8px;flex:none">${statusBadge(x.team)}<span class="pts" style="font-size:15px;width:30px;text-align:right">${teamPoints(x.team,x.assignment)}</span></div>
+         </div>`).join('')}
+     </div>`;
+  }
+
+  // standings
+  html += `<div class="spread" style="margin-bottom:6px"><div class="eyebrow" style="margin:0">Standings</div>
+     <button class="tiny" style="color:var(--alive)" onclick="view='bracket';render()">Bracket →</button></div>`;
+  html += `<div class="card">${rows.map((r,i)=>{
+    const me2 = r.member.id===me.id;
+    return `<div class="lb-row">
+       <div class="rank r${i+1}">${i+1}</div>
+       <div class="lb-mid">
+         <div class="pn">${esc(r.member.name)}${r.member.host?' <span class="tiny muted">host</span>':''}${me2?' <span class="badge alive" style="padding:1px 6px">you</span>':''}</div>
+         <div class="meta">${r.alive} alive · ${r.teams.length} teams</div>
+         <div class="bar"><i style="width:${Math.round(r.pts/maxPts(rows)*100)}%"></i></div>
+       </div>
+       <div class="pts">${r.pts}</div>
+     </div>`;
+  }).join('')}</div>`;
+
+  // who needs what / live feel
+  html += `<div class="eyebrow">Who needs what</div><div class="card tight">${whoNeedsWhat(rows)}</div>`;
+
+  body.innerHTML = html;
+  swapScreen(top, body);
+}
+function whoNeedsWhat(rows){
+  if(S.assignments.length===0) return `<p class="tiny muted" style="margin:0">Scenarios appear once teams are dealt.</p>`;
+  const leader = rows[0];
+  const out = [];
+  rows.forEach(r=>{
+    const aliveTeams = r.teams.filter(x=>!x.team.eliminated);
+    const deepest = aliveTeams.reduce((m,x)=>Math.max(m,STAGES.indexOf(x.team.stage)),-1);
+    let line;
+    if(aliveTeams.length===0){ line = `all out — playing for pride and group points only`; }
+    else if(r.member.id===leader.id){ line = `leads by ${r.pts-(rows[1]?rows[1].pts:0)} with ${aliveTeams.length} still standing`; }
+    else {
+      const gap = leader.pts - r.pts;
+      line = `${gap} behind · needs ${aliveTeams.map(x=>x.team.flag).join(' ')} to keep winning`;
+    }
+    out.push(`<div class="kv"><span><strong>${esc(r.member.name)}</strong></span><span style="color:var(--mist);font-family:Inter;font-size:12px;text-align:right;max-width:62%">${line}</span></div>`);
+  });
+  return out.join('');
+}
+function swapScreen(top, body){
+  const app = el('app');
+  const old = el('screen'); if(old) old.remove();
+  // remove any non-topbar screen leftovers
+  [...app.children].forEach(c=>{ if(c.classList && c.classList.contains('screen') && c!==top) c.remove(); });
+  app.appendChild(body);
+}
+
+/* =========================================================================
+   TEAMS  —  assignment engines: random, snake, manual/auction
+   ========================================================================= */
+function renderTeams(){
+  const top = el('topbar');
+  const body = h(`<div class="screen" id="screen"></div>`);
+  let html = `<div class="eyebrow">Assignment</div><h2 class="h-poster">The draw</h2>`;
+
+  if(S.locked && S.assignments.length){
+    html += `<p class="sub">Pool is locked. Teams are set. Track them on the dashboard and the bracket.</p>`;
+    html += renderAssignedList();
+    body.innerHTML=html; swapScreen(top,body); return;
+  }
+
+  if(S.members.length < 2){
+    html += `<div class="note">Add at least one more player in Admin before dealing. Right now it's just you.</div><div class="divider"></div>`;
+  }
+
+  if(S.assignments.length){
+    html += `<div class="card tight"><div class="spread"><p class="tiny" style="margin:0">${S.assignments.length} teams dealt across ${new Set(S.assignments.map(a=>a.member)).size} players.</p>
+       <button class="tiny" style="color:var(--heat)" onclick="clearDraw()">Clear</button></div></div>`;
+    html += renderAssignedList();
+    html += `<div class="divider"></div>`;
+  }
+
+  if(S.draw==="random"){
+    html += `<div class="card">
+       <h3 class="anton" style="font-size:16px;margin-bottom:6px">Random draw</h3>
+       <p class="tiny muted" style="margin:0 0 12px">Shuffle the 48 and deal ${S.teamsPer} to each of the ${S.members.length} players, round by round. Nobody can complain. They will anyway.</p>
+       <button class="btn" onclick="runRandom()">Shuffle and deal</button></div>`;
+  } else if(S.draw==="snake"){
+    html += renderSnake();
+  } else {
+    html += renderManual();
+  }
+
+  body.innerHTML = html; swapScreen(top,body);
+}
+function renderAssignedList(){
+  return `<div class="card">${S.members.map(m=>{
+    const ts = teamsOf(m.id);
+    if(!ts.length) return "";
+    return `<div style="padding:8px 0;border-top:1px solid rgba(42,53,82,.5)">
+       <div class="spread"><strong style="font-size:13px">${esc(m.name)}</strong><span class="tiny muted">${ts.length} team${ts.length>1?'s':''}</span></div>
+       <div style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
+         ${ts.map(x=>`<div class="row" style="gap:8px">${teamChip(x.team)}</div>`).join('')}
+       </div></div>`;
+  }).join('')}</div>`;
+}
+function runRandom(){
+  const pool = shuffle([...S.teams]);
+  S.assignments = [];
+  let i=0;
+  for(let round=0; round<S.teamsPer; round++){
+    S.members.forEach(m=>{
+      if(i<pool.length){ S.assignments.push({id:uid(), member:m.id, team:pool[i].id, price:null, call:null}); i++; }
+    });
+  }
+  S.messages.push({id:uid(),sys:true,who:"Draw",text:"The hat has spoken. Teams are dealt.",ts:now()});
+  savePool(); toast("Dealt. Check the dashboard."); renderTeams();
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+let snakeState=null;
+function renderSnake(){
+  if(!snakeState){
+    const order = shuffle(S.members.map(m=>m.id));
+    snakeState = {order, pickIndex:0, picks:[]};
+  }
+  const total = S.members.length*S.teamsPer;
+  const seq = snakeOrder(snakeState.order, S.teamsPer);
+  if(snakeState.pickIndex>=total){
+    S.assignments = snakeState.picks.map(p=>({id:uid(),member:p.member,team:p.team,price:null,call:null}));
+    snakeState=null; savePool();
+    return `<div class="card"><p class="tiny muted" style="margin:0">Draft complete.</p></div>`;
+  }
+  const onClock = seq[snakeState.pickIndex];
+  const taken = new Set(snakeState.picks.map(p=>p.team));
+  const member = memberById(onClock);
+  const round = Math.floor(snakeState.pickIndex/S.members.length)+1;
+  return `<div class="card">
+     <div class="spread"><div><div class="eyebrow" style="margin:0;color:var(--alive)">Round ${round} of ${S.teamsPer} · pick ${snakeState.pickIndex+1}/${total}</div>
+       <h3 class="anton" style="font-size:20px">${esc(member.name)} on the clock</h3></div></div>
+     <div class="note" style="margin-top:8px">Snake order: 1→${S.members.length}, then back. Tap a nation to draft it.</div>
+   </div>
+   <div class="card tight" style="max-height:50vh;overflow:auto">
+     ${Object.keys(GROUPS_SEED).map(g=>{
+        const teams = S.teams.filter(t=>t.group===g);
+        return `<div style="margin-bottom:6px"><div class="tiny muted" style="margin:6px 0 3px">Group ${g}</div>
+          ${teams.map(t=>`<div class="draftpick ${taken.has(t.id)?'taken':''}">
+             ${teamChip(t)}
+             ${taken.has(t.id)?'<span class="owner" style="margin-left:auto">taken</span>':`<button onclick="snakePick('${t.id}')">Draft</button>`}
+           </div>`).join('')}</div>`;
+     }).join('')}
+   </div>`;
+}
+function snakeOrder(order, rounds){
+  const seq=[];
+  for(let r=0;r<rounds;r++){ const o = r%2===0?order:[...order].reverse(); seq.push(...o); }
+  return seq;
+}
+function snakePick(teamId){
+  const seq = snakeOrder(snakeState.order, S.teamsPer);
+  const member = seq[snakeState.pickIndex];
+  snakeState.picks.push({member, team:teamId});
+  snakeState.pickIndex++;
+  if(snakeState.pickIndex>=S.members.length*S.teamsPer){
+    S.assignments = snakeState.picks.map(p=>({id:uid(),member:p.member,team:p.team,price:null,call:null}));
+    S.messages.push({id:uid(),sys:true,who:"Draft",text:"Snake draft complete. No takebacks.",ts:now()});
+    snakeState=null; savePool(); toast("Draft complete."); view="dash"; render(); return;
+  }
+  renderTeams();
+}
+
+let manualState=null;
+function renderManual(){
+  if(!manualState) manualState={member:S.members[0].id};
+  const taken = new Set(S.assignments.map(a=>a.team));
+  const m = memberById(manualState.member);
+  const auction = true; // price field doubles for auction mode
+  return `<div class="card">
+     <h3 class="anton" style="font-size:16px;margin-bottom:8px">Manual / auction</h3>
+     <p class="tiny muted" style="margin:0 0 12px">Assign by hand, or run an auction by typing the winning bid. Keep each player to ${S.teamsPer}.</p>
+     <label class="field" style="margin-bottom:0"><span>Assigning to</span>
+       <select id="m-member" onchange="setManualMember(this.value)">
+         ${S.members.map(mm=>`<option value="${mm.id}" ${mm.id===manualState.member?'selected':''}>${esc(mm.name)} (${teamsOf(mm.id).length}/${S.teamsPer})</option>`).join('')}
+       </select></label>
+   </div>
+   <div class="card tight" style="max-height:48vh;overflow:auto">
+     ${Object.keys(GROUPS_SEED).map(g=>`<div style="margin-bottom:4px"><div class="tiny muted" style="margin:6px 0 3px">Group ${g}</div>
+        ${S.teams.filter(t=>t.group===g).map(t=>{
+          const a = S.assignments.find(a=>a.team===t.id);
+          const ownerName = a ? memberById(a.member).name : null;
+          return `<div class="draftpick ${taken.has(t.id)?'taken':''}">
+             ${teamChip(t)}
+             ${a?`<span class="owner" style="margin-left:auto">${esc(ownerName)}${a.price?' · '+a.price:''}</span><button style="background:var(--heat);color:#fff" onclick="manualUnassign('${t.id}')">✕</button>`
+                : `<input type="number" placeholder="bid" style="width:62px;margin-left:auto;padding:6px 8px" id="bid-${t.id}"><button onclick="manualAssign('${t.id}')">Add</button>`}
+           </div>`;
+        }).join('')}</div>`).join('')}
+   </div>
+   ${S.assignments.length? `<button class="btn ghost sm" onclick="view='dash';render()">Done for now</button>`:''}`;
+}
+function manualAssign(teamId){
+  const m = manualState.member;
+  if(teamsOf(m).length>=S.teamsPer) return toast(`${memberById(m).name} already has ${S.teamsPer}.`);
+  if(S.assignments.some(a=>a.team===teamId)) return toast("Already owned.");
+  const bid = el('bid-'+teamId) ? (+el('bid-'+teamId).value||null) : null;
+  S.assignments.push({id:uid(),member:m,team:teamId,price:bid,call:null});
+  savePool(); renderTeams();
+}
+function manualUnassign(teamId){ S.assignments=S.assignments.filter(a=>a.team!==teamId); savePool(); renderTeams(); }
+function setManualMember(v){ manualState.member=v; renderTeams(); }
+function clearDraw(){ if(S.locked) return toast("Pool locked."); S.assignments=[]; snakeState=null; savePool(); toast("Draw cleared."); renderTeams(); }
+
+/* =========================================================================
+   BRACKET  —  groups with ownership badges + knockout-by-stage tracker.
+   We do NOT invent official R32 pairings (those follow a feed). We show,
+   unmistakably, whose team is alive and at what depth.
+   ========================================================================= */
+function renderBracket(){
+  const top=el('topbar');
+  const body=h(`<div class="screen" id="screen"></div>`);
+  let html=`<div class="eyebrow">The wallchart</div><h2 class="h-poster">Who's alive</h2>
+    <p class="sub">Twelve groups, ownership stamped on every nation. Below, the knockout ladder fills as the tournament burns down.</p>`;
+
+  // knockout ladder
+  const koStages = ["R32","R16","QF","SF","FINAL","CHAMPION"];
+  const anyKO = S.teams.some(t=>STAGES.indexOf(t.stage)>=1);
+  html += `<div class="card">
+     <h3 class="anton" style="font-size:15px;margin-bottom:10px">Knockout ladder</h3>`;
+  if(!anyKO){
+    html += `<p class="tiny muted" style="margin:0">No knockout results yet. Enter group finishes in Admin, or hit “Simulate tournament” to watch it play out.</p>`;
+  } else {
+    html += `<div class="ko-wrap">${koStages.map(st=>{
+      const here = S.teams.filter(t=>STAGES.indexOf(t.stage)>=STAGES.indexOf(st));
+      return `<div class="ko-col"><h4>${STAGE_LABEL[st]} <span class="muted">(${here.length})</span></h4>
+        ${here.length? here.map(t=>{
+           const reachedFurther = STAGES.indexOf(t.stage)>STAGES.indexOf(st);
+           const aliveHere = !t.eliminated || reachedFurther || t.stage==="CHAMPION";
+           const o=ownerOf(t.id);
+           return `<div class="ko-slot ${aliveHere?'alive':'elim'}">
+             <div class="team ${(!aliveHere)?'elim':''}"><span class="flag">${t.flag}</span><span class="tn" style="font-size:13px">${esc(t.name)}</span></div>
+             ${o?`<div class="owner" style="margin-top:5px;display:inline-block">${esc(o.name)}</div>`:'<div class="tiny muted" style="margin-top:4px">neutral</div>'}
+           </div>`;
+        }).join('') : '<div class="ko-slot ko-empty">awaiting</div>'}
+      </div>`;
+    }).join('')}</div>`;
+  }
+  html += `</div>`;
+
+  // groups
+  html += `<div class="eyebrow">Group stage</div>`;
+  html += Object.keys(GROUPS_SEED).map(g=>{
+    const teams = S.teams.filter(t=>t.group===g).slice().sort((a,b)=> (b.gw*3+b.gd)-(a.gw*3+a.gd));
+    const ownedN = teams.filter(t=>ownerOf(t.id)).length;
+    return `<div class="card group-card">
+       <div class="group-head"><span class="g">Group ${g}</span><span class="gm">${ownedN}/4 owned</span></div>
+       ${teams.map((t,i)=>`<div class="grow ${t.eliminated&&t.stage==='GROUP'?'elim':''}">
+          <span class="pos">${i+1}</span>
+          ${teamChip(t,{owner:true})}
+          <span class="rec" style="margin-left:auto">${t.gw}-${t.gd}-${t.gl}</span>
+        </div>`).join('')}
+     </div>`;
+  }).join('');
+
+  body.innerHTML=html; swapScreen(top,body);
+}
+
+/* =========================================================================
+   BANTER  —  chat, taunts, funeral + glory cards
+   ========================================================================= */
+function renderBanter(){
+  const top=el('topbar');
+  const body=h(`<div class="screen" id="screen"></div>`);
+  let html=`<div class="eyebrow">The group chat</div><h2 class="h-poster">Banter</h2>`;
+
+  // card generators
+  const elim = S.teams.filter(t=>t.eliminated && ownerOf(t.id));
+  const champ = S.teams.find(t=>t.stage==="CHAMPION");
+  html += `<div class="row" style="gap:10px;margin-bottom:14px">
+     <button class="btn sm ghost" style="margin:0" onclick="openCard('funeral')">⚰ Funeral card</button>
+     <button class="btn sm gold" style="margin:0" onclick="openCard('glory')">★ Path to glory</button>
+   </div>`;
+  html += `<div id="cardSlot"></div>`;
+
+  // taunts
+  const taunts = ["Your boys are getting buried 🪦","Tournament's coming home 🏴󠁧󠁢󠁥󠁮󠁧󠁿","Underdog supremacy 🐕","Cope and seethe","Group of death? More like group of yours","Crying in 8 languages"];
+  html += `<div class="taunts">${taunts.map(t=>`<button onclick="sendTaunt('${esc(t).replace(/'/g,"\\'")}')">${t}</button>`).join('')}</div>`;
+
+  // feed
+  html += `<div class="feed" id="feed">${[...S.messages].reverse().map(m=>`
+     <div class="msg"><div class="who ${m.sys?'sys':''} ${m.taunt?'taunt':''}">${esc(m.who)}</div>
+       <div class="tx">${esc(m.text)}</div>
+       <div class="ts">${timeAgo(m.ts)}</div></div>`).join('')}</div>`;
+
+  html += `<div class="composer"><input type="text" id="msg-in" placeholder="Say something you'll regret…" maxlength="180"><button onclick="sendMsg()">Send</button></div>`;
+
+  body.innerHTML=html; swapScreen(top,body);
+  const inp=el('msg-in'); if(inp) inp.addEventListener('keydown',e=>{ if(e.key==='Enter') sendMsg(); });
+}
+function sendMsg(){
+  const v=el('msg-in').value.trim(); if(!v) return;
+  S.messages.push({id:uid(),who:S.members[0].name,text:v,ts:now()});
+  savePool(); renderBanter();
+}
+function sendTaunt(t){
+  S.messages.push({id:uid(),who:S.members[0].name,text:t,ts:now(),taunt:true});
+  savePool(); renderBanter();
+}
+function openCard(kind){
+  const slot=el('cardSlot'); if(!slot) return;
+  if(kind==='funeral'){
+    const dead = S.teams.filter(t=>t.eliminated).sort((a,b)=>STAGES.indexOf(a.stage)-STAGES.indexOf(b.stage));
+    if(!dead.length){ slot.innerHTML=`<div class="note">Nobody's dead yet. Patience.</div>`; return; }
+    const t = dead[0]; const o=ownerOf(t.id);
+    slot.innerHTML = `<div class="print"><div class="kicker">In loving memory</div>
+       <div class="flagbig">${t.flag}</div>
+       <div class="big">${esc(t.name)}</div>
+       <div class="line">Fell at the ${STAGE_LABEL[t.stage].toLowerCase()}. Record ${t.gw}-${t.gd}-${t.gl}.</div>
+       <div class="line" style="margin-top:8px;font-weight:700">${o?esc(o.name)+" is in mourning.":"Owned by no one. Mourned by no one."}</div>
+       <div class="stamp">Eliminated</div></div>
+       <button class="btn sm ghost" style="margin-top:10px" onclick="shareText('${o?esc(o.name):'Someone'} just lost ${esc(t.name)} at the ${STAGE_LABEL[t.stage]}. Pour one out. — ${esc(S.name)}')">Share this obituary</button>`;
+  } else {
+    const alive = S.teams.filter(t=>!t.eliminated && ownerOf(t.id)).sort((a,b)=>STAGES.indexOf(b.stage)-STAGES.indexOf(a.stage));
+    if(!alive.length){ slot.innerHTML=`<div class="note">No owned survivors to celebrate. Bleak.</div>`; return; }
+    const t=alive[0]; const o=ownerOf(t.id);
+    slot.innerHTML=`<div class="print glory"><div class="kicker">Path to glory</div>
+       <div class="flagbig">${t.flag}</div>
+       <div class="big">${esc(t.name)}</div>
+       <div class="line">Still standing at the ${STAGE_LABEL[t.stage].toLowerCase()}. ${t.tier==='UND'?'And nobody saw it coming.':'As expected, but still.'}</div>
+       <div class="line" style="margin-top:8px;font-weight:700">Carrying ${o?esc(o.name):'a neutral'} toward the trophy.</div>
+       <div class="stamp">Alive</div></div>
+       <button class="btn sm gold" style="margin-top:10px" onclick="shareText('${esc(t.name)} marches on. ${o?esc(o.name):'Someone'} smells glory in ${esc(S.name)}. ${t.flag}')">Share the dream</button>`;
+  }
+}
+function shareText(txt){
+  if(navigator.share){ navigator.share({text:txt}).catch(()=>{}); }
+  else if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(()=>toast("Copied to clipboard")); }
+  else toast("Sharing not supported here");
+}
+function timeAgo(ts){
+  const s=Math.floor((now()-ts)/1000);
+  if(s<60) return "just now";
+  if(s<3600) return Math.floor(s/60)+"m ago";
+  if(s<86400) return Math.floor(s/3600)+"h ago";
+  return Math.floor(s/86400)+"d ago";
+}
+
+/* =========================================================================
+   ADMIN  —  players, results, lock, simulate, export, data note
+   ========================================================================= */
+function renderAdmin(){
+  const top=el('topbar');
+  const body=h(`<div class="screen" id="screen"></div>`);
+  let html=`<div class="eyebrow">Host controls</div><h2 class="h-poster">Admin</h2>`;
+
+  // players
+  html += `<div class="card"><h3 class="anton" style="font-size:15px;margin-bottom:10px">Players (${S.members.length}/${S.seatsTarget})</h3>
+     ${S.members.map(m=>`<div class="spread" style="padding:6px 0;border-top:1px solid rgba(42,53,82,.5)">
+        <div class="row"><strong style="font-size:14px">${esc(m.name)}</strong>${m.host?'<span class="owner">host</span>':''}</div>
+        ${m.host?'':`<button class="tiny" style="color:var(--heat)" onclick="removeMember('${m.id}')">remove</button>`}
+      </div>`).join('')}
+     ${S.locked?'':`<div class="composer" style="margin-top:12px"><input type="text" id="newp" placeholder="Add a player" maxlength="24"><button onclick="addMember()">Add</button></div>`}
+   </div>`;
+
+  // invite
+  html += `<div class="card tight"><div class="spread"><div><div class="tiny muted">Invite link</div>
+     <div class="mono tiny" style="color:var(--alive);margin-top:2px;word-break:break-all">${esc(inviteUrl())}</div></div>
+     <button class="btn sm ghost" style="width:auto;margin:0;padding:8px 12px" onclick="shareText('Join my World Cup survivors pool ${esc(S.name)}: '+inviteUrl())">Copy</button></div>
+     <p class="tiny muted" style="margin:8px 0 0">${SUPA.on?'Sync is on. Anyone who opens this link joins the same pool from their own phone.':'Link sharing across phones needs the Supabase backend wired up. In this demo the pool lives on this device.'}</p></div>`;
+
+  // results control
+  html += `<div class="card"><h3 class="anton" style="font-size:15px;margin-bottom:6px">Tournament control</h3>
+     <p class="tiny muted" style="margin:0 0 12px">No live feed is connected in this build, so results are entered here. Wire a fixtures API to make this automatic.</p>
+     <div class="btnrow" style="margin-bottom:10px">
+       <button class="btn sm" onclick="simulate()">Simulate tournament</button>
+       <button class="btn sm ghost" onclick="resetResults()">Reset results</button>
+     </div>
+     <button class="btn sm ghost" onclick="toggleResultsEditor()">Edit team-by-team ▾</button>
+     <div id="resEditor" style="display:none;margin-top:12px"></div>
+   </div>`;
+
+  // settings
+  html += `<div class="card"><h3 class="anton" style="font-size:15px;margin-bottom:10px">Pool settings</h3>
+     <div class="kv"><span>Visibility</span><button class="badge ${S.isPublic?'alive':''}" style="cursor:pointer;background:none" onclick="toggleVisibility()">${S.isPublic?'Public':'Private'}</button></div>
+     <div class="kv"><span>Status</span><span style="color:${S.locked?'var(--heat)':'var(--alive)'}">${S.locked?'Locked':'Open'}</span></div>
+     <div class="kv"><span>Scoring</span><span>${S.scoring}</span></div>
+     <div class="kv"><span>Draw method</span><span>${S.draw}</span></div>
+     <button class="btn sm ${S.locked?'gold':'heat'}" style="margin-top:12px" onclick="toggleLock()">${S.locked?'Unlock pool':'Lock pool (no more changes)'}</button>
+   </div>`;
+
+  // export / danger
+  html += `<div class="card tight">
+     <div class="btnrow"><button class="btn sm ghost" onclick="exportCSV()">Export CSV</button>
+     <button class="btn sm ghost" style="color:var(--heat)" onclick="nukePool()">Delete pool</button></div></div>`;
+
+  body.innerHTML=html; swapScreen(top,body);
+}
+function addMember(){
+  if(S.locked) return toast("Pool locked.");
+  const v=el('newp').value.trim(); if(!v) return;
+  if(S.members.length>=48) return toast("Max 48 players.");
+  S.members.push({id:uid(),name:v}); 
+  S.messages.push({id:uid(),sys:true,who:"Pool",text:`${v} joined the pool.`,ts:now()});
+  savePool(); renderAdmin();
+}
+function removeMember(id){
+  if(S.locked) return toast("Pool locked.");
+  S.members=S.members.filter(m=>m.id!==id);
+  S.assignments=S.assignments.filter(a=>a.member!==id);
+  savePool(); renderAdmin();
+}
+function toggleLock(){ S.locked=!S.locked; S.messages.push({id:uid(),sys:true,who:"Pool",text:S.locked?"Pool locked. Teams are final.":"Pool reopened.",ts:now()}); savePool(); renderAdmin(); }
+function toggleVisibility(){ S.isPublic=!S.isPublic; savePool(); renderAdmin(); }
+
+let resOpen=false;
+function toggleResultsEditor(){
+  resOpen=!resOpen;
+  const box=el('resEditor'); box.style.display=resOpen?'block':'none';
+  if(resOpen) box.innerHTML = S.teams.map(t=>`
+     <div style="padding:8px 0;border-top:1px solid rgba(42,53,82,.5)">
+       <div class="spread" style="margin-bottom:6px">${teamChip(t)}<span class="tiny muted">G${t.group}</span></div>
+       <div class="row" style="gap:6px;margin-bottom:6px">
+         <span class="tiny muted" style="width:54px">Group</span>
+         <input type="number" min="0" max="3" value="${t.gw}" style="width:44px;padding:5px" onchange="setRec('${t.id}','gw',this.value)" title="W">
+         <input type="number" min="0" max="3" value="${t.gd}" style="width:44px;padding:5px" onchange="setRec('${t.id}','gd',this.value)" title="D">
+         <input type="number" min="0" max="3" value="${t.gl}" style="width:44px;padding:5px" onchange="setRec('${t.id}','gl',this.value)" title="L">
+         <span class="tiny muted">W / D / L</span>
+       </div>
+       <div class="seg small" data-team="${t.id}">
+         ${STAGES.map(st=>`<button class="${t.stage===st?'on':''}" onclick="setStage('${t.id}','${st}')">${STAGE_SHORT[st]}</button>`).join('')}
+       </div>
+       <div class="row" style="gap:14px;margin-top:7px">
+         <label class="tiny" style="color:var(--mist)"><input type="checkbox" ${t.eliminated?'checked':''} onchange="setElim('${t.id}',this.checked)"> out</label>
+         <label class="tiny" style="color:var(--mist)"><input type="checkbox" ${t.cleanSheet?'checked':''} onchange="setBonus('${t.id}','cleanSheet',this.checked)"> clean-sheet run</label>
+         <label class="tiny" style="color:var(--mist)"><input type="checkbox" ${t.penalties?'checked':''} onchange="setBonus('${t.id}','penalties',this.checked)"> pens survived</label>
+       </div>
+     </div>`).join('');
+}
+function setRec(id,k,v){ teamById(id)[k]=Math.max(0,Math.min(3,+v||0)); savePool(); }
+function setStage(id,st){
+  const t=teamById(id); const prev=t.stage; t.stage=st;
+  if(st!=="GROUP" && st!=="CHAMPION") t.eliminated = (STAGES.indexOf(st)<STAGES.indexOf("CHAMPION")) ? t.eliminated : false;
+  if(st==="CHAMPION") t.eliminated=false;
+  // message on meaningful change
+  if(prev!==st){
+    const o=ownerOf(id);
+    if(st==="CHAMPION") S.messages.push({id:uid(),sys:true,who:"Champion",text:`${t.flag} ${t.name} are champions of the world.${o?' '+o.name+' takes the pool by storm.':''}`,ts:now()});
+  }
+  savePool(); toggleResultsEditor(); resOpen=true; el('resEditor').style.display='block';
+}
+function setElim(id,v){
+  const t=teamById(id); t.eliminated=v;
+  if(v){ const o=ownerOf(id); S.messages.push({id:uid(),sys:true,who:"Result",text:`${t.flag} ${t.name} are out at the ${STAGE_LABEL[t.stage].toLowerCase()}.${o?' '+o.name+' feels that one.':''}`,ts:now()}); }
+  savePool();
+}
+function setBonus(id,k,v){ teamById(id)[k]=v; savePool(); }
+
+function simulate(){
+  // funnel: 32 reach R32, 16 R16, 8 QF, 4 SF, 2 FINAL, 1 CHAMPION
+  const teams = shuffle([...S.teams]);
+  teams.forEach(t=>{ // random plausible group record
+    const w=Math.floor(Math.random()*4); const d=Math.floor(Math.random()*(4-w)); 
+    t.gw=w; t.gd=d; t.gl=3-w-d; t.stage="GROUP"; t.eliminated=true; t.cleanSheet=false; t.penalties=false;
+  });
+  const funnel=[["R32",32],["R16",16],["QF",8],["SF",4],["FINAL",2],["CHAMPION",1]];
+  // weighted strength: favourites lean ahead but upsets are real
+  let survivors = teams.slice().map(t=>({t, s:(t.tier==="FAV"?0.62:0.40)+Math.random()*0.6}))
+    .sort((a,b)=>b.s-a.s).map(x=>x.t);
+  funnel.forEach(([st,n])=>{
+    survivors = survivors.slice(0,n);
+    survivors.forEach(t=>{ t.stage=st; });
+  });
+  // everyone who didn't reach a stage is eliminated at their furthest
+  S.teams.forEach(t=>{ t.eliminated = t.stage!=="CHAMPION"; });
+  // sprinkle some bonus flags
+  S.teams.filter(t=>STAGES.indexOf(t.stage)>=3).forEach(t=>{ if(Math.random()<0.4) t.cleanSheet=true; if(Math.random()<0.3) t.penalties=true; });
+  const champ=S.teams.find(t=>t.stage==="CHAMPION");
+  S.messages.push({id:uid(),sys:true,who:"Simulation",text:`Tournament simulated. ${champ.flag} ${champ.name} lifted the trophy.`,ts:now()});
+  savePool(); resOpen=false; toast("Simulated. Check the bracket."); view="bracket"; render();
+}
+function resetResults(){
+  S.teams.forEach(t=>{ t.gw=0;t.gd=0;t.gl=0;t.stage="GROUP";t.eliminated=false;t.cleanSheet=false;t.penalties=false; });
+  savePool(); resOpen=false; toast("Results reset."); renderAdmin();
+}
+function exportCSV(){
+  const rows=[["player","team","group","tier","stage","eliminated","gw","gd","gl","clean_sheet","penalties","points"]];
+  S.members.forEach(m=> teamsOf(m.id).forEach(x=>{
+    const t=x.team;
+    rows.push([m.name,t.name,t.group,t.tier,t.stage,t.eliminated,t.gw,t.gd,t.gl,t.cleanSheet,t.penalties,teamPoints(t,x.assignment)]);
+  }));
+  // include leaderboard summary
+  rows.push([]); rows.push(["LEADERBOARD"]); rows.push(["rank","player","points","alive_teams"]);
+  leaderboard().forEach((r,i)=>rows.push([i+1,r.member.name,r.pts,r.alive]));
+  const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`${S.name.replace(/\s+/g,'-').toLowerCase()}-pool.csv`; a.click();
+  URL.revokeObjectURL(url); toast("CSV exported.");
+}
+async function nukePool(){
+  if(!confirm("Delete this pool for good?")) return;
+  S=null; await Store.set(KEY,null); view="dash"; render();
+}
+
+/* =========================================================================
+   BOOT
+   ========================================================================= */
+(async function(){
+  let link = null;
+  try{ link = new URLSearchParams(location.search).get('pool'); }catch(e){}
+  if(SUPA.on && link){
+    const remote = await Remote.pull(link);
+    if(remote){ S = remote; await Store.set(KEY,S); }
+    else { await loadPool(); }
+  } else {
+    await loadPool();
+  }
+  render();
+  Remote.startSync();
+})();
+window.view=view; // expose for inline handlers
+// keep global `view` writable from inline onclicks
+Object.defineProperty(window,'view',{get:()=>view,set:v=>{view=v;}});
+</script>
+</body>
+</html>
