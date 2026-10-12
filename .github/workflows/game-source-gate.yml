@@ -27,7 +27,7 @@ jobs:
             "cheese-cube.pages.dev"
           )
           for host in "${blocked[@]}"; do
-            if git grep -n -I -F "$host" -- ':!config/external-game-sources.json' ':!docs/EXTERNAL_GAME_SOURCE_POLICY.md'; then
+            if git grep -n -I -F "$host" -- ':!config/external-game-sources.json' ':!docs/EXTERNAL_GAME_SOURCE_POLICY.md' ':!.github/workflows/game-source-gate.yml'; then
               echo "::error::Blocked external game source referenced outside policy registry: $host"
               exit 1
             fi
