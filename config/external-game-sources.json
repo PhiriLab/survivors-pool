@@ -1,37 +1,193 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "default_classification": "amber",
   "updated": "2026-10-12",
-  "rules": {
-    "green": "Architecture/reference use permitted after licence and dependency validation. No proprietary assets.",
-    "amber": "Research/study only. Do not import code or assets until unresolved checks are closed.",
-    "red": "Block automated navigation, download, execution, dependency addition, and asset ingestion."
+  "interpretation": {
+    "green": "Safe as an architectural/reference pattern. Code reuse still requires the per-source reuse_mode and licence constraints to permit it.",
+    "amber": "Study only unless a separate legal/licensing review clears code reuse and asset handling.",
+    "red": "Do not navigate automatically, download, execute, add as a dependency, or ingest assets."
   },
   "sources": [
     {
+      "id": "webwars",
+      "name": "WebWars / Hedgewars browser port",
+      "canonical_repo": "https://github.com/apmlabs/webwars",
+      "upstream": "https://github.com/hedgewars/hw",
+      "classification": "green",
+      "reuse_mode": "architecture-only-for-proprietary-projects",
+      "licence": "GPL-2.0 for code; upstream Hedgewars assets have separate licensing",
+      "developer": "apmlabs / idealist, built on Hedgewars",
+      "patterns": [
+        "Pascal-to-C-to-Emscripten pipeline",
+        "browser IPC shim",
+        "requestAnimationFrame main-loop adaptation",
+        "WebSocket-to-native-server gateway",
+        "lazy asset loading"
+      ],
+      "constraints": [
+        "do not copy GPL code into a proprietary PhiriLab runtime",
+        "treat upstream assets separately from code",
+        "build in isolation before adoption"
+      ]
+    },
+    {
+      "id": "skate-3-rust-engine",
+      "name": "Skate 3 Rust Engine",
+      "canonical_repo": "https://github.com/SK8-ENGINE/skate-3-rust-engine",
+      "classification": "amber",
+      "reuse_mode": "study-or-separate-gpl-product",
+      "licence": "GPL-3.0-only for original project code; third-party components retain their own licences",
+      "developer": "dumbad and contributors / SK8-ENGINE",
+      "patterns": [
+        "Rust + Bevy",
+        "WebGPU/browser target",
+        "clean separation of engine from retail assets",
+        "mod/agent authoring interfaces"
+      ],
+      "constraints": [
+        "commercial reuse is possible only with GPL obligations satisfied",
+        "no EA code, data, assets or trademarks are licensed by the project",
+        "prefer original PhiriLab physics/content for proprietary products"
+      ]
+    },
+    {
+      "id": "skate-browser-host",
+      "name": "skate.aaddpp.lol browser host",
+      "canonical_url": "https://skate.aaddpp.lol/",
+      "classification": "amber",
+      "reuse_mode": "observe-only",
+      "licence": "host states no game content is hosted; user supplies legally owned converted data",
+      "developer": "aaddpp / vmpprotect attribution reported publicly",
+      "patterns": [
+        "user-owned asset streaming",
+        "browser settings persistence",
+        "engine/content separation"
+      ],
+      "constraints": [
+        "do not depend on the hosted service",
+        "trace implementation back to canonical engine repository",
+        "never ingest user retail assets"
+      ]
+    },
+    {
+      "id": "opence",
+      "name": "Open Community Edition / Halo CE port",
+      "canonical_repo": "https://github.com/OpenCommunityEdition/OpenCE",
+      "canonical_url": "https://hcemobile.com/",
+      "classification": "amber",
+      "reuse_mode": "architecture-only",
+      "licence": "repository declares CC0 for contributor-controlled work",
+      "developer": "OpenCommunityEdition, derived from bnunu/halo-1 and punpckhdq/halo",
+      "patterns": [
+        "native decompilation to Linux/Windows/Android/Web",
+        "WASM + WebGL2 + SDL3",
+        "browser-private storage for user-supplied disc data",
+        "WebRTC browser multiplayer",
+        "cross-platform CI"
+      ],
+      "constraints": [
+        "CC0 cannot waive rights the contributors do not own",
+        "project is based on decompiled proprietary game code",
+        "do not reuse code or game content in PhiriLab products without specialist legal clearance",
+        "architecture may be studied"
+      ]
+    },
+    {
+      "id": "webxash-frontend",
+      "name": "WebXash frontend",
+      "canonical_repo": "https://github.com/x8BitRain/webXash",
+      "engine_repo": "https://github.com/yohimik/webxash3d-fwgs",
+      "upstream_engine": "https://github.com/FWGS/xash3d-fwgs",
+      "classification": "green",
+      "reuse_mode": "pattern-only-unless-component-licences-cleared",
+      "licence": "frontend repository does not present a clear top-level licence in the reviewed file set; Xash3D FWGS engine is GPLv3-family",
+      "developer": "x8BitRain frontend; yohimik web port; FWGS engine",
+      "patterns": [
+        "File System Access API for user-owned files",
+        "in-memory WASM filesystem",
+        "IndexedDB save capture",
+        "engine/content separation",
+        "browser-to-server networking"
+      ],
+      "constraints": [
+        "do not copy unlicensed frontend code",
+        "GPL engine reuse requires GPL-compatible distribution",
+        "users must supply legally owned game files",
+        "use official upstreams only; FWGS explicitly warns about malicious third-party repacks"
+      ]
+    },
+    {
+      "id": "surfd-validation",
+      "name": "Classic Surf / surfd.net",
+      "canonical_url": "https://surfd.net/reference.html",
+      "classification": "green",
+      "reuse_mode": "methodology-only",
+      "licence": "independently authored implementation described; map and third-party asset rights vary and are explicitly unresolved for some content",
+      "developer": "surfd.net project",
+      "patterns": [
+        "reference-first physics reconstruction",
+        "pinned evidence and hashes",
+        "declared tolerances",
+        "native comparison probes",
+        "determinism across frame rates",
+        "explicit unresolved limits"
+      ],
+      "constraints": [
+        "do not ingest CSS maps or third-party assets without rights clearance",
+        "copy methodology, not proprietary assets or Source SDK code",
+        "retain evidence labels and uncertainty"
+      ]
+    },
+    {
+      "id": "q3js",
+      "name": "Q3JS",
+      "canonical_repo": "https://github.com/lklacar/q3js",
+      "classification": "amber",
+      "reuse_mode": "architecture-only",
+      "licence": "ioquake3-derived engine GPL-2.0-only; Q3JS integration/client/server/site code states all rights reserved",
+      "developer": "lklacar",
+      "patterns": [
+        "WASM engine",
+        "WebSocket-to-UDP gateway",
+        "server discovery",
+        "asset manifests",
+        "persistent browser cache",
+        "multi-service container architecture"
+      ],
+      "constraints": [
+        "do not copy proprietary Q3JS integration code",
+        "do not include Quake III game data",
+        "engine code remains subject to GPL"
+      ]
+    },
+    {
+      "id": "wwasm",
+      "name": "Wwasm / RTCW WebAssembly port",
+      "canonical_repo": "https://github.com/GMH-Code/Wwasm",
+      "reference_host": "https://rtcw.pieter.com/",
+      "classification": "green",
+      "reuse_mode": "architecture-only-for-proprietary-projects",
+      "licence": "based on iortcw / id-released engine code with GPL-family obligations",
+      "developer": "GMH-Code; pieter.com hosts a preservation deployment using iortcw + Wwasm",
+      "patterns": [
+        "native C/C++ FPS engine to WASM",
+        "QVM execution",
+        "browser database persistence",
+        "WebSocket networking adaptation",
+        "user-provided resource-pack model"
+      ],
+      "constraints": [
+        "no retail RTCW resource files in PhiriLab",
+        "do not publicly host proprietary PK3 content",
+        "observe GPL obligations for code reuse"
+      ]
+    },
+    {
       "id": "webwars-pattern",
       "classification": "green",
-      "purpose": "WASM/native-engine architecture reference",
+      "purpose": "legacy-engine-to-WASM architecture reference",
       "constraints": [
-        "verify licence compatibility before code reuse",
-        "no third-party proprietary assets"
-      ]
-    },
-    {
-      "id": "webxash-pattern",
-      "classification": "green",
-      "purpose": "engine/content separation reference",
-      "constraints": [
-        "user-owned content must remain separate",
-        "verify component licences"
-      ]
-    },
-    {
-      "id": "surf-validation-pattern",
-      "classification": "green",
-      "purpose": "deterministic physics/reference validation methodology",
-      "constraints": [
-        "methodology preferred over asset reuse"
+        "architecture reference only for proprietary projects"
       ]
     },
     {
@@ -40,15 +196,8 @@
       "purpose": "agent-readable state plus external visual testing",
       "constraints": [
         "read-only telemetry by default",
-        "mutating actions require explicit allowlist"
-      ]
-    },
-    {
-      "id": "diablo-web-pattern",
-      "classification": "amber",
-      "purpose": "WASM worker/storage/network architecture study",
-      "constraints": [
-        "no code import until project-level licensing is resolved"
+        "mutating actions require an explicit allowlist",
+        "keep agent observation separate from authority"
       ]
     },
     {
@@ -58,7 +207,8 @@
       "constraints": [
         "verify provenance",
         "verify engine licence",
-        "verify asset rights"
+        "verify asset rights",
+        "do not depend on viral hosts"
       ]
     },
     {
