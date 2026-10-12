@@ -179,6 +179,7 @@ input:focus,select:focus{border-color:var(--alive)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./qa/agent-bridge.js"></script>
 </head>
 <body>
 <div class="app" id="app"></div>
@@ -1082,6 +1083,59 @@ async function nukePool(){
 window.view=view; // expose for inline handlers
 // keep global `view` writable from inline onclicks
 Object.defineProperty(window,'view',{get:()=>view,set:v=>{view=v;}});
+
+/* =========================================================================
+   PHIRILAB AGENT QA ADAPTER
+   Sanitized telemetry only. No names, messages, invite links, credentials,
+   storage handles, remote-sync methods, result mutation, or destructive admin.
+   ========================================================================= */
+if(window.__PHIRILAB_QA__){
+  window.__PHIRILAB_QA__.register({
+    gameId:"survivors-pool",
+    getState:()=>{
+      if(!S) return {ready:false,view};
+      const rows=leaderboard();
+      const stageCounts={};
+      STAGES.forEach(st=>{ stageCounts[st]=S.teams.filter(t=>t.stage===st).length; });
+      const champion=S.teams.find(t=>t.stage==="CHAMPION");
+      return {
+        ready:true,
+        view,
+        pool:{
+          locked:!!S.locked,
+          public:!!S.isPublic,
+          members:S.members.length,
+          seatsTarget:S.seatsTarget,
+          assignments:S.assignments.length,
+          teams:S.teams.length,
+          scoring:String(S.scoring||""),
+          draw:String(S.draw||"")
+        },
+        tournament:{
+          stageCounts,
+          eliminated:S.teams.filter(t=>t.eliminated).length,
+          champion:champion?champion.name:null
+        },
+        leaderboard:rows.map((r,i)=>({
+          rank:i+1,
+          points:r.pts,
+          alive:r.alive,
+          teams:r.teams.length
+        }))
+      };
+    },
+    actions:{
+      navigate:(payload)=>{
+        const allowed=new Set(["dash","teams","bracket"]);
+        const next=payload&&payload.view;
+        if(!allowed.has(next)) return {ok:false,error:"view-not-allowlisted"};
+        view=next;
+        render();
+        return {ok:true,view};
+      }
+    }
+  });
+}
 </script>
 </body>
 </html>
