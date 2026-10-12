@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "default_classification": "amber",
+  "updated": "2026-10-12",
+  "rules": {
+    "green": "Architecture/reference use permitted after licence and dependency validation. No proprietary assets.",
+    "amber": "Research/study only. Do not import code or assets until unresolved checks are closed.",
+    "red": "Block automated navigation, download, execution, dependency addition, and asset ingestion."
+  },
+  "sources": [
+    {
+      "id": "webwars-pattern",
+      "classification": "green",
+      "purpose": "WASM/native-engine architecture reference",
+      "constraints": [
+        "verify licence compatibility before code reuse",
+        "no third-party proprietary assets"
+      ]
+    },
+    {
+      "id": "webxash-pattern",
+      "classification": "green",
+      "purpose": "engine/content separation reference",
+      "constraints": [
+        "user-owned content must remain separate",
+        "verify component licences"
+      ]
+    },
+    {
+      "id": "surf-validation-pattern",
+      "classification": "green",
+      "purpose": "deterministic physics/reference validation methodology",
+      "constraints": [
+        "methodology preferred over asset reuse"
+      ]
+    },
+    {
+      "id": "agent-game-qa-pattern",
+      "classification": "green",
+      "purpose": "agent-readable state plus external visual testing",
+      "constraints": [
+        "read-only telemetry by default",
+        "mutating actions require explicit allowlist"
+      ]
+    },
+    {
+      "id": "diablo-web-pattern",
+      "classification": "amber",
+      "purpose": "WASM worker/storage/network architecture study",
+      "constraints": [
+        "no code import until project-level licensing is resolved"
+      ]
+    },
+    {
+      "id": "commercial-fan-ports",
+      "classification": "amber",
+      "purpose": "technical observation only",
+      "constraints": [
+        "verify provenance",
+        "verify engine licence",
+        "verify asset rights"
+      ]
+    },
+    {
+      "id": "moon-zombies-pages",
+      "classification": "red",
+      "url": "https://moon-zombies.pages.dev/",
+      "reason": "previously observed unexpected redirect/change of destination"
+    },
+    {
+      "id": "kino-der-toten-pages",
+      "classification": "red",
+      "url": "https://kino-der-toten.pages.dev/",
+      "reason": "previously observed unexpected redirect/change of destination"
+    },
+    {
+      "id": "cheese-cube-pages",
+      "classification": "red",
+      "url": "https://cheese-cube.pages.dev/",
+      "reason": "previously observed unexpected redirect/change of destination"
+    }
+  ]
+}
