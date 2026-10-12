@@ -1,0 +1,43 @@
+name: Game source safety gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  source-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate source registry JSON
+        run: python -m json.tool config/external-game-sources.json >/dev/null
+
+      - name: Reject blocked external game URLs outside the registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          blocked=(
+            "moon-zombies.pages.dev"
+            "kino-der-toten.pages.dev"
+            "cheese-cube.pages.dev"
+          )
+          for host in "${blocked[@]}"; do
+            if git grep -n -I -F "$host" -- ':!config/external-game-sources.json' ':!docs/EXTERNAL_GAME_SOURCE_POLICY.md' ':!.github/workflows/game-source-gate.yml'; then
+              echo "::error::Blocked external game source referenced outside policy registry: $host"
+              exit 1
+            fi
+          done
+
+      - name: Reject obvious secret placeholders in QA code
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -n -I -E '(service[_ -]?role|private[_ -]?key|secret[_ -]?key|api[_ -]?secret)' -- qa/; then
+            echo "::error::QA layer must not contain or request privileged secrets"
+            exit 1
+          fi
